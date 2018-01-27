@@ -12,6 +12,7 @@ public class AvatarController : MonoBehaviour
 	public Transform bodyTransform;
 	public Transform leftHandTransform;
 	public Transform rightHandTransform;
+	public SphereShield shield;
 
 	private Rigidbody _rigidBody;
 	private float _jumpTimer = 0f;
@@ -34,12 +35,23 @@ public class AvatarController : MonoBehaviour
 		if (Input.GetMouseButton(1))
 			CaptureColor();
 		game.particleAttractor.Move((leftHandTransform.position + rightHandTransform.position) / 2f);
-		if (Input.GetKeyDown(KeyCode.Space) && _jumpTimer > 1f)
+		if (Input.GetKeyDown(KeyCode.LeftAlt) && game.colorPool.value != 0)
+		{
+			shield.Cast();
+			game.colorPool.EmptyAll();
+		}
+		if (Input.GetKeyDown(KeyCode.Space))
 		{
 			_rigidBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 			_jumpTimer = 0f;
 		}
 		_jumpTimer += Time.deltaTime;
+		if (transform.position.y < -10f)
+			transform.position = Vector3.zero;
+		if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
+			game.particleAttractor.Show();
+		else
+			game.particleAttractor.Hide();
 	}
 
 	private void MoveAvatar(Vector3 direction)
@@ -71,15 +83,17 @@ public class AvatarController : MonoBehaviour
 		float hue;
 		if (!game.colorRaycaster.RaycastColor(out point, out hue))
 			return;
-		game.particleAttractor.Attract(point);
+		game.particleAttractor.Attract(Camera.main.transform.position + Camera.main.transform.forward * 10f);
 		game.colorPool.Fill(hue);
 	}
 
 	private void ShootColor()
 	{
 		Vector3 point;
-		float hue;
-		if (game.colorRaycaster.RaycastEnemy(out point, out hue))
-			game.particleAttractor.Attract(point);
+		if (game.colorPool.value == 0f)
+			return;
+		game.particleAttractor.Attract(Camera.main.transform.position + Camera.main.transform.forward * 10f);
+		game.colorPool.Empty();
+		game.colorRaycaster.RaycastEnemy(out point, game.colorPool.hue);
 	}
 }

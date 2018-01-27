@@ -14,13 +14,27 @@ public class ParticleAttractor : MonoBehaviour
 		transform.position = target;
 	}
 
+	public void Show()
+	{
+		if (!gameObject.activeInHierarchy)
+			gameObject.SetActive(true);
+	}
+
+	public void Hide()
+	{
+		if (gameObject.activeInHierarchy)
+			gameObject.SetActive(false);
+	}
+
 	public void Attract(Vector3 target)
 	{
 		_particles = new ParticleSystem.Particle[_particleSystem.main.maxParticles];
 		_particlesCount = _particleSystem.GetParticles(_particles);
 		float step = speed * Time.deltaTime;
 		for (int i = 0; i < _particlesCount; i++)
+		{
 			_particles[i].position = Vector3.LerpUnclamped(_particles[i].position, target, step);
+		}
 		_particleSystem.SetParticles(_particles, _particlesCount);
 	}
 

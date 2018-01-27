@@ -1,23 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Game;
 
 public class ColorRaycaster : MonoBehaviour
 {
 	public LayerMask enemyLayer;
 	public LayerMask colorLayer;
 
-	public bool RaycastEnemy(out Vector3 point, out float hue)
+	public bool RaycastEnemy(out Vector3 point, float hue)
 	{
 		point = Vector3.zero;
-		hue = 0f;
+		if (game.colorPool.value == 0)
+			return false;
 		RaycastHit raycastHit;
-		bool hit = Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out raycastHit, 100f, enemyLayer);
-		if (hit)
+		bool valid = Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out raycastHit, 100f, enemyLayer);
+		if (valid)
 		{
 			point = raycastHit.point;
+			raycastHit.transform.GetComponent<Enemy>().Drain(hue);
 		}
-		return hit;
+		return valid;
 	}
 
 	public bool RaycastColor(out Vector3 point, out float hue)

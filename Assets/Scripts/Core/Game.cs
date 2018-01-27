@@ -19,4 +19,9 @@ public class Game : MonoBehaviour
 	public ColorPool colorPool;
 	public ColorRaycaster colorRaycaster;
 	public ParticleAttractor particleAttractor;
+
+	private void Awake()
+	{
+		Cursor.visible = false;
+	}
 }

@@ -11,7 +11,7 @@ public class ColorIndicator : MonoBehaviour
 	private void Awake()
 	{
 		_rectTransform = transform as RectTransform;
-		game.colorPool.onHueCaptured += Rotate;
+		game.colorPool.onColorChanged += Rotate;
 	}
 
 	private void Rotate(float targetRotation)
