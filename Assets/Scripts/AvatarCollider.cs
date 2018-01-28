@@ -13,7 +13,8 @@ public class AvatarCollider : MonoBehaviour
 		_health -= 0.1f;
 		Destroy(other.gameObject);
 		onHealthChanged?.Invoke(_health);
+		GetComponent<AudioSource>().Play();
 		if (_health < 0f)
-			Application.Quit();
+			Application.LoadLevel(Application.loadedLevel);
 	}
 }

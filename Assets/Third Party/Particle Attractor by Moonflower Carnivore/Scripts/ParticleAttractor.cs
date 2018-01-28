@@ -8,11 +8,7 @@ public class ParticleAttractor : MonoBehaviour
 	private ParticleSystem _particleSystem;
 	private ParticleSystem.Particle[] _particles;
 	private int _particlesCount;
-
-	public void Move(Vector3 target)
-	{
-		transform.position = target;
-	}
+	private ParticleSystem.MinMaxGradient _gradient;
 
 	public void Show()
 	{
@@ -26,8 +22,14 @@ public class ParticleAttractor : MonoBehaviour
 			gameObject.SetActive(false);
 	}
 
-	public void Attract(Vector3 target)
+	public void Attract(Vector3 source, Vector3 target, bool useGradient = true)
 	{
+		transform.position = source;
+		var main = _particleSystem.main;
+		if (useGradient)
+			main.startColor = _gradient;
+		else
+			main.startColor = Color.white;
 		_particles = new ParticleSystem.Particle[_particleSystem.main.maxParticles];
 		_particlesCount = _particleSystem.GetParticles(_particles);
 		float step = speed * Time.deltaTime;
@@ -40,6 +42,9 @@ public class ParticleAttractor : MonoBehaviour
 
 	private void Awake()
 	{
+
 		_particleSystem = GetComponent<ParticleSystem>();
+		var main = _particleSystem.main;
+		_gradient = main.startColor;
 	}
 }

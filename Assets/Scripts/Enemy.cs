@@ -16,7 +16,6 @@ public class Enemy : MonoBehaviour
 	private float _evadeTimer = 0f;
 	private float _jumpTimer = 0f;
 
-
 	private MeshRenderer[] _meshRenderers;
 	private Rigidbody _rigidBody;
 	private Transform _target;
@@ -64,7 +63,7 @@ public class Enemy : MonoBehaviour
 		_evadeTimer += Time.deltaTime;
 		_shootTimer += Time.deltaTime;
 		_jumpTimer += Time.deltaTime;
-		if (_shootTimer > 2f && Vector3.Distance(_target.position, transform.position) < 20f)
+		if (_shootTimer > 1f && Vector3.Distance(_target.position, transform.position) < 25f)
 		{
 			Shoot();
 			_shootTimer = 0f;
@@ -85,13 +84,14 @@ public class Enemy : MonoBehaviour
 		GameObject projectile = Instantiate(projectilePrefab);
 		projectile.SetActive(true);
 		projectile.transform.position = transform.position + transform.forward;
-		projectile.GetComponent<Projectile>().SetDirection((_target.position - transform.position).normalized);
+		projectile.GetComponent<Projectile>().SetDirection((_target.position - transform.position).normalized + (Random.onUnitSphere * 0.1f) - (Random.onUnitSphere * 0.1f));
 	}
 
 	private void Die()
 	{
 		_alive = false;
 		explosion.SetActive(true);
+		GetComponent<AudioSource>().Play();
 		_rigidBody.constraints = RigidbodyConstraints.None;
 		_rigidBody.AddForceAtPosition((transform.position - _target.position).normalized * 40f + Vector3.up * 20f, Vector3.up, ForceMode.Impulse);
 		Enemy[] enemies = FindObjectsOfType<Enemy>();

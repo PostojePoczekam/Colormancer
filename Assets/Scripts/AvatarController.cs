@@ -34,20 +34,13 @@ public class AvatarController : MonoBehaviour
 			ShootColor();
 		if (Input.GetMouseButton(1))
 			CaptureColor();
-		game.particleAttractor.Move((leftHandTransform.position + rightHandTransform.position) / 2f);
-		if (Input.GetKeyDown(KeyCode.LeftAlt) && game.colorPool.value != 0)
-		{
-			shield.Cast();
-			game.timeManager.SlowDown();
-			game.colorPool.EmptyAll();
-		}
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
 			_rigidBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 			_jumpTimer = 0f;
 		}
 		_jumpTimer += Time.deltaTime;
-		if (transform.position.y < -10f)
+		if (transform.position.y < -20f)
 			transform.position = Vector3.zero;
 		if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
 			game.particleAttractor.Show();
@@ -82,10 +75,9 @@ public class AvatarController : MonoBehaviour
 	{
 		Vector3 point;
 		float hue;
-		if (!game.colorRaycaster.RaycastColor(out point, out hue))
-			return;
-		game.particleAttractor.Attract(Camera.main.transform.position + Camera.main.transform.forward * 10f);
-		game.colorPool.Fill(hue);
+		game.particleAttractor.Attract(Camera.main.transform.position + Camera.main.transform.forward * 20f, (leftHandTransform.position + rightHandTransform.position) / 2f, false);
+		if (game.colorRaycaster.RaycastColor(out point, out hue))
+			game.colorPool.Fill(hue);
 	}
 
 	private void ShootColor()
@@ -93,7 +85,7 @@ public class AvatarController : MonoBehaviour
 		Vector3 point;
 		if (game.colorPool.value == 0f)
 			return;
-		game.particleAttractor.Attract(Camera.main.transform.position + Camera.main.transform.forward * 10f);
+		game.particleAttractor.Attract((leftHandTransform.position + rightHandTransform.position) / 2f, Camera.main.transform.position + Camera.main.transform.forward * 20f);
 		game.colorPool.Empty();
 		game.colorRaycaster.RaycastEnemy(out point, game.colorPool.hue);
 	}

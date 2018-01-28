@@ -5,6 +5,15 @@ using UnityEngine.UI;
 
 public class HealthIndicatior : MonoBehaviour
 {
+	public Image image
+	{
+		get
+		{
+			if (_image == null)
+				_image = GetComponent<Image>();
+			return _image;
+		}
+	}
 	private Image _image;
 
 	private void Awake()
@@ -15,8 +24,6 @@ public class HealthIndicatior : MonoBehaviour
 
 	private void UpdateHealth(float health)
 	{
-		Color color = _image.color;
-		color.a = health;
-		_image.color = color;
+		image.fillAmount = health;
 	}
 }
