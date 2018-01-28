@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Game;
 
 public class Projectile : MonoBehaviour
 {
@@ -14,8 +15,8 @@ public class Projectile : MonoBehaviour
 
 	private void Update()
 	{
-		transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one, Time.deltaTime * 3f);
-		transform.position += _direction * 0.2f;
+		transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one, Time.deltaTime * 3f * game.timeManager.timeFactor);
+		transform.position += _direction * 0.3f * game.timeManager.timeFactor;
 	}
 
 	private IEnumerator ByeBye()

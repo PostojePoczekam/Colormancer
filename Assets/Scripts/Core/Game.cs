@@ -19,6 +19,7 @@ public class Game : MonoBehaviour
 	public ColorPool colorPool;
 	public ColorRaycaster colorRaycaster;
 	public ParticleAttractor particleAttractor;
+	public TimeManager timeManager;
 
 	private void Awake()
 	{

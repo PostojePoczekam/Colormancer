@@ -38,6 +38,7 @@ public class AvatarController : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.LeftAlt) && game.colorPool.value != 0)
 		{
 			shield.Cast();
+			game.timeManager.SlowDown();
 			game.colorPool.EmptyAll();
 		}
 		if (Input.GetKeyDown(KeyCode.Space))

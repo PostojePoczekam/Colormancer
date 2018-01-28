@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour
 {
 	public static event System.Action onEnemyKilled;
 	public GameObject projectilePrefab;
+	public GameObject explosion;
 
 	private float _value = 1f;
 	private float _hue = 0f;
@@ -52,10 +53,10 @@ public class Enemy : MonoBehaviour
 		if (!_alive)
 			return;
 		if (Vector3.Distance(_target.position, transform.position) > 25f && _evadeTimer > 1f)
-			_rigidBody.AddForce((_target.position - transform.position).normalized, ForceMode.VelocityChange);
+			_rigidBody.AddForce((_target.position - transform.position).normalized * game.timeManager.timeFactor, ForceMode.VelocityChange);
 		if (Vector3.Distance(_target.position, transform.position) < 15f && _evadeTimer > 2f)
 		{
-			_rigidBody.AddForce((transform.position - _target.position).normalized * 10f + Vector3.up * Random.Range(2f, 8f), ForceMode.Impulse);
+			_rigidBody.AddForce((transform.position - _target.position).normalized * 10f * game.timeManager.timeFactor + Vector3.up * Random.Range(2f, 8f), ForceMode.Impulse);
 			_evadeTimer = 0f;
 		}
 		transform.LookAt(_target);
@@ -72,9 +73,9 @@ public class Enemy : MonoBehaviour
 		if (_jumpTimer > Random.Range(4f, 8f))
 		{
 			if (Random.Range(0, 2) == 0)
-				_rigidBody.AddForce(transform.right * 10f, ForceMode.Impulse);
+				_rigidBody.AddForce(transform.right * 10f * game.timeManager.timeFactor, ForceMode.Impulse);
 			else
-				_rigidBody.AddForce(-transform.right * 10f, ForceMode.Impulse);
+				_rigidBody.AddForce(-transform.right * 10f * game.timeManager.timeFactor, ForceMode.Impulse);
 			_jumpTimer = 0f;
 		}
 	}
@@ -84,12 +85,13 @@ public class Enemy : MonoBehaviour
 		GameObject projectile = Instantiate(projectilePrefab);
 		projectile.SetActive(true);
 		projectile.transform.position = transform.position + transform.forward;
-		projectile.GetComponent<Projectile>().SetDirection(transform.forward);
+		projectile.GetComponent<Projectile>().SetDirection((_target.position - transform.position).normalized);
 	}
 
 	private void Die()
 	{
 		_alive = false;
+		explosion.SetActive(true);
 		_rigidBody.constraints = RigidbodyConstraints.None;
 		_rigidBody.AddForceAtPosition((transform.position - _target.position).normalized * 40f + Vector3.up * 20f, Vector3.up, ForceMode.Impulse);
 		Enemy[] enemies = FindObjectsOfType<Enemy>();
@@ -108,7 +110,7 @@ public class Enemy : MonoBehaviour
 
 	private IEnumerator ByeBye()
 	{
-		yield return new WaitForSeconds(3f);
+		yield return new WaitForSeconds(5f);
 		Destroy(gameObject);
 	}
 }
