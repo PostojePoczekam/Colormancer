@@ -24,10 +24,10 @@ public class Enemy : MonoBehaviour
 		_target = target;
 	}
 
-	public void Drain(float hue, float multiplier = 20f)
+	public void Drain(float hue, float multiplier = 5f)
 	{
 		float delta = Mathf.Abs(Mathf.DeltaAngle(hue * 360f, _hue * 360f) / 360f);
-		_value = Mathf.Clamp01(_value -= Time.deltaTime * delta * multiplier);
+		_value = Mathf.Clamp01(_value -= Time.deltaTime * multiplier / delta);
 		foreach (var meshRenderer in _meshRenderers)
 			meshRenderer.material.color = Color.HSVToRGB(_hue, _value, 0.5f + _value / 2f);
 		_rigidBody.AddForce((transform.position - _target.position).normalized + Vector3.up * 0.3f, ForceMode.Impulse);
@@ -99,7 +99,7 @@ public class Enemy : MonoBehaviour
 		{
 			if (Vector3.Distance(enemies[x].transform.position, transform.position) < 10f)
 			{
-				enemies[x].Drain(_hue, 30);
+				enemies[x].Drain(_hue, 10);
 				enemies[x].GetComponent<Rigidbody>().AddForce((enemies[x].transform.position - transform.position).normalized * 10f, ForceMode.Impulse);
 
 			}

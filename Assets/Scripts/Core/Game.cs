@@ -25,4 +25,10 @@ public class Game : MonoBehaviour
 	{
 		Cursor.visible = false;
 	}
+
+	private void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.Escape))
+			Application.Quit();
+	}
 }

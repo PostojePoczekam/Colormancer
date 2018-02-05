@@ -17,4 +17,9 @@ public class AvatarCollider : MonoBehaviour
 		if (_health < 0f)
 			Application.LoadLevel(Application.loadedLevel);
 	}
+
+	private void OnDestroy()
+	{
+		onHealthChanged = null;
+	}
 }
